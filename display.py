@@ -1,5 +1,8 @@
-import time
+import pyxel
 
+
+LARGURA, ALTURA = 701, 900
+MEIO = LARGURA // 2
 
 rules = {
     '111': '1',
@@ -29,18 +32,26 @@ def create_new_line(previous_line: str) -> str:
     return _new_line
 
 
-def print_line(line: str) -> None:
-    print("".join(["█" if cell == '0' else " " for cell in line]))
+linha = MEIO * '0' + '1' + MEIO * '0'
+step = 0
 
 
-if __name__ == "__main__":
-    COLS = 101
-    line = (COLS // 2 * '0') + '1' + (COLS // 2 * '0')
+pyxel.init(LARGURA, ALTURA, display_scale=1)
+def update():
+    global step
+    global linha
+    
+    if pyxel.btnp(pyxel.KEY_Q):
+        pyxel.quit()
 
-    # line = [random.choice([0, 1]) for _ in range(COLS)]
-    print_line(line)
+    step += 1
+    linha = create_new_line(linha)
 
-    for _ in range(5):
-        line = create_new_line(line)
-        print_line(line)
-        time.sleep(0.1)
+def draw():
+    global linha
+    # pyxel.cls(0)
+    for index, cell in enumerate(linha):
+        if cell == '1':
+            pyxel.pset(index, step, 2)
+
+pyxel.run(update, draw)
